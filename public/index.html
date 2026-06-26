@@ -1,0 +1,466 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Trip Sync — Discover India</title>
+
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;700;900&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet" />
+
+  <!-- AOS -->
+  <link href="https://unpkg.com/aos@2.3.4/dist/aos.css" rel="stylesheet" />
+
+  <!-- Leaflet -->
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+
+  <!-- Font Awesome for icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+  <!-- Custom Cursor -->
+  <div class="cursor-glow" id="cursorGlow"></div>
+
+  <!-- ══════════ NAVBAR ══════════ -->
+  <nav class="navbar" id="navbar">
+    <div class="nav-container">
+      <a href="#hero" class="nav-logo">
+        <span class="logo-icon">◈</span> Trip<span class="logo-accent">Sync</span>
+      </a>
+      <ul class="nav-links" id="navLinks">
+        <li><a href="#destinations" class="nav-link">Destinations</a></li>
+        <li><a href="#plan" class="nav-link">Plan Trip</a></li>
+        <li><a href="#about" class="nav-link">About</a></li>
+        <li><a href="#contact" class="nav-link">Contact</a></li>
+      </ul>
+      <button class="hamburger" id="hamburger" aria-label="Toggle menu">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+  </nav>
+
+  <!-- ══════════ HERO ══════════ -->
+  <section class="hero" id="hero">
+    <canvas id="heroCanvas"></canvas>
+    <div class="hero-content">
+      <p class="hero-eyebrow" data-aos="fade-down" data-aos-delay="100">✦ Discover the Soul of India</p>
+      <h1 class="hero-title hero-title--pulse" data-aos="fade-up" data-aos-delay="200">
+        Your Journey<br /><span class="gradient-text">Begins Here</span>
+      </h1>
+      <p class="hero-subtitle" data-aos="fade-up" data-aos-delay="350">
+        Explore ancient temples, pristine beaches, misty mountains,<br class="br-desktop" /> and vibrant cities — all in one sync.
+      </p>
+      <div class="hero-cta" data-aos="fade-up" data-aos-delay="500">
+        <a href="#destinations" class="btn btn-primary">Explore Destinations</a>
+        <a href="#plan" class="btn btn-ghost">Plan Your Trip</a>
+      </div>
+    </div>
+    <div class="hero-scroll-hint">
+      <span>Scroll</span>
+      <div class="scroll-line"></div>
+    </div>
+  </section>
+
+  <!-- ══════════ DESTINATIONS ══════════ -->
+  <section class="section destinations-section" id="destinations">
+    <div class="container">
+      <div class="section-header" data-aos="fade-up">
+        <p class="section-eyebrow">◈ Top Picks</p>
+        <h2 class="section-title">Popular <span class="gradient-text">Destinations</span></h2>
+        <p class="section-subtitle">Hand-curated experiences across India's most iconic landscapes</p>
+      </div>
+
+      <!-- Search -->
+      <div class="search-wrapper" data-aos="fade-up" data-aos-delay="100">
+        <div class="search-bar">
+          <i class="fa fa-search search-icon"></i>
+          <input type="text" id="searchInput" class="search-input" placeholder="" aria-label="Search destinations" />
+          <label class="search-label" for="searchInput">Search destinations...</label>
+        </div>
+      </div>
+
+      <!-- Category Filters -->
+      <div class="filter-tags" data-aos="fade-up" data-aos-delay="150">
+        <button class="filter-tag active" data-cat="all">All</button>
+        <button class="filter-tag" data-cat="Beach">🏖 Beach</button>
+        <button class="filter-tag" data-cat="Desert">🏜 Desert</button>
+        <button class="filter-tag" data-cat="Heritage">🏛 Heritage</button>
+        <button class="filter-tag" data-cat="Hill Station">⛰ Hill Station</button>
+        <button class="filter-tag" data-cat="Spiritual">🕌 Spiritual</button>
+        <button class="filter-tag" data-cat="Adventure">🧗 Adventure</button>
+      </div>
+
+      <!-- Cards Grid -->
+      <div class="cards-grid" id="cardsGrid"></div>
+      <p class="no-results" id="noResults" style="display:none">No destinations found. Try a different search.</p>
+    </div>
+  </section>
+
+  <!-- ══════════ PLAN YOUR TRIP ══════════ -->
+  <section class="section plan-section" id="plan">
+    <div class="container">
+      <div class="section-header" data-aos="fade-up">
+        <p class="section-eyebrow">◈ Your Itinerary</p>
+        <h2 class="section-title">Plan Your <span class="gradient-text">Trip</span></h2>
+        <p class="section-subtitle">Build a personalised checklist — synced to the server in real time</p>
+      </div>
+
+      <div class="plan-layout" data-aos="fade-up" data-aos-delay="100">
+        <!-- Checklist Builder -->
+        <div class="plan-card glass-card">
+          <h3 class="plan-card-title"><i class="fa fa-list-check"></i> Trip Checklist</h3>
+
+          <div class="plan-input-row">
+            <input type="text" id="checklistInput" class="plan-input" placeholder="Add a task e.g. Book flight…" maxlength="80" />
+            <button class="btn btn-primary btn-sm" id="addChecklistItem">
+              <i class="fa fa-plus"></i> Add
+            </button>
+          </div>
+
+          <div class="checklist-quick-adds">
+            <span class="quick-label">Quick add:</span>
+            <button class="quick-tag" data-task="Book flights">Book flights</button>
+            <button class="quick-tag" data-task="Reserve hotel">Reserve hotel</button>
+            <button class="quick-tag" data-task="Get travel insurance">Get travel insurance</button>
+            <button class="quick-tag" data-task="Pack bags">Pack bags</button>
+            <button class="quick-tag" data-task="Exchange currency">Exchange currency</button>
+            <button class="quick-tag" data-task="Download offline maps">Download offline maps</button>
+            <button class="quick-tag" data-task="Notify bank">Notify bank</button>
+          </div>
+
+          <ul class="checklist-list" id="checklistList"></ul>
+
+          <div class="checklist-footer">
+            <span class="checklist-progress" id="checklistProgress">0 / 0 done</span>
+            <button class="btn btn-ghost btn-sm" id="clearChecklist">Clear All</button>
+          </div>
+          <div class="checklist-progress-bar">
+            <div class="checklist-progress-fill" id="checklistFill"></div>
+          </div>
+        </div>
+
+        <!-- Trip Stats / Tips Panel -->
+        <div class="plan-side">
+          <div class="plan-tip-card glass-card" data-aos="fade-left" data-aos-delay="200">
+            <h3 class="plan-card-title"><i class="fa fa-lightbulb"></i> Pro Travel Tips</h3>
+            <ul class="tip-list">
+              <li><span class="tip-icon">✈</span> Book flights 6–8 weeks in advance for best fares.</li>
+              <li><span class="tip-icon">🌧</span> Check monsoon dates — June–Sept affects most regions.</li>
+              <li><span class="tip-icon">💊</span> Carry basic medicines: antacids, rehydration salts.</li>
+              <li><span class="tip-icon">📱</span> Buy a local SIM on arrival for cheap data.</li>
+              <li><span class="tip-icon">🧣</span> Pack a light scarf — useful for temples & cool nights.</li>
+              <li><span class="tip-icon">💳</span> Inform your bank about the travel dates to avoid blocks.</li>
+            </ul>
+          </div>
+
+          <div class="plan-stat-card glass-card" data-aos="fade-left" data-aos-delay="300">
+            <h3 class="plan-card-title"><i class="fa fa-chart-line"></i> Best Travel Windows</h3>
+            <div class="season-bars">
+              <div class="season-row">
+                <span class="season-name">Oct – Mar</span>
+                <div class="season-bar"><div class="season-fill" style="width:95%;background:var(--clr-neon-cyan)"></div></div>
+                <span class="season-label peak">Peak</span>
+              </div>
+              <div class="season-row">
+                <span class="season-name">Apr – May</span>
+                <div class="season-bar"><div class="season-fill" style="width:60%;background:var(--clr-neon-gold)"></div></div>
+                <span class="season-label shoulder">Shoulder</span>
+              </div>
+              <div class="season-row">
+                <span class="season-name">Jun – Sep</span>
+                <div class="season-bar"><div class="season-fill" style="width:30%;background:var(--clr-neon-violet)"></div></div>
+                <span class="season-label off">Monsoon</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══════════ ABOUT ══════════ -->
+  <section class="section about-section" id="about">
+    <div class="container">
+      <div class="about-grid">
+        <div class="about-text" data-aos="fade-right">
+          <p class="section-eyebrow">◈ Our Story</p>
+          <h2 class="section-title">Travel Smarter.<br /><span class="gradient-text">Sync Better.</span></h2>
+          <p>Trip Sync was born from a simple belief: planning a trip to India should be as magical as the journey itself. We built a platform that speaks to every kind of traveller — the seeker, the wanderer, and the planner.</p>
+          <p>From the snow-capped passes of Ladakh to the temple corridors of Hampi, we map India's soul so you can find yours.</p>
+          <div class="about-stats">
+            <div class="stat-pill">
+              <span class="stat-num">8+</span>
+              <span class="stat-lbl">Curated Destinations</span>
+            </div>
+            <div class="stat-pill">
+              <span class="stat-num">50K+</span>
+              <span class="stat-lbl">Trips Planned</span>
+            </div>
+            <div class="stat-pill">
+              <span class="stat-num">4.9★</span>
+              <span class="stat-lbl">Avg Rating</span>
+            </div>
+          </div>
+        </div>
+        <div class="about-visual" data-aos="fade-left" data-aos-delay="150">
+          <div class="about-orb-container">
+            <div class="about-orb orb-1"></div>
+            <div class="about-orb orb-2"></div>
+            <div class="about-orb orb-3"></div>
+            <div class="about-orb-text">
+              <span class="orb-icon">◈</span>
+              <span>India<br/>Awaits</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══════════ CONTACT ══════════ -->
+  <section class="section contact-section" id="contact">
+    <div class="container">
+      <div class="section-header" data-aos="fade-up">
+        <p class="section-eyebrow">◈ Get In Touch</p>
+        <h2 class="section-title">Contact <span class="gradient-text">Us</span></h2>
+        <p class="section-subtitle">Have a question or a dream trip in mind? We'd love to hear from you.</p>
+      </div>
+
+      <div class="contact-layout">
+        <form class="contact-form glass-card" id="contactForm" data-aos="fade-right" data-aos-delay="100" novalidate>
+          <div class="form-group">
+            <input type="text" id="contactName" class="form-input" placeholder=" " autocomplete="name" required />
+            <label class="form-label" for="contactName">Your Name</label>
+            <span class="form-line"></span>
+          </div>
+          <div class="form-group">
+            <input type="email" id="contactEmail" class="form-input" placeholder=" " autocomplete="email" required />
+            <label class="form-label" for="contactEmail">Email Address</label>
+            <span class="form-line"></span>
+          </div>
+          <div class="form-group">
+            <textarea id="contactMessage" class="form-input form-textarea" placeholder=" " rows="5" required></textarea>
+            <label class="form-label" for="contactMessage">Your Message</label>
+            <span class="form-line"></span>
+          </div>
+          <button type="submit" class="btn btn-primary btn-full">
+            <i class="fa fa-paper-plane"></i> Send Message
+          </button>
+          <p class="form-success" id="formSuccess" style="display:none">
+            <i class="fa fa-check-circle"></i> Message sent! We'll be in touch soon.
+          </p>
+        </form>
+
+        <div class="contact-info" data-aos="fade-left" data-aos-delay="200">
+          <div class="contact-info-card glass-card">
+            <i class="fa fa-location-dot contact-info-icon"></i>
+            <div>
+              <h4>HQ</h4>
+              <p>Cyber Hub, Gurugram,<br>Haryana, India 122002</p>
+            </div>
+          </div>
+          <div class="contact-info-card glass-card">
+            <i class="fa fa-envelope contact-info-icon"></i>
+            <div>
+              <h4>Email</h4>
+              <p>hello@tripsync.in</p>
+            </div>
+          </div>
+          <div class="contact-info-card glass-card">
+            <i class="fa fa-phone contact-info-icon"></i>
+            <div>
+              <h4>Phone</h4>
+              <p>+91 98765 43210</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══════════ FOOTER ══════════ -->
+  <footer class="footer">
+    <div class="container footer-inner">
+      <div class="footer-brand">
+        <a href="#hero" class="nav-logo footer-logo">
+          <span class="logo-icon">◈</span> Trip<span class="logo-accent">Sync</span>
+        </a>
+        <p class="footer-tagline">Navigate India. Feel every moment.</p>
+        <div class="footer-socials">
+          <a href="#" class="social-link" aria-label="Instagram"><i class="fa-brands fa-instagram"></i></a>
+          <a href="#" class="social-link" aria-label="Twitter/X"><i class="fa-brands fa-x-twitter"></i></a>
+          <a href="#" class="social-link" aria-label="YouTube"><i class="fa-brands fa-youtube"></i></a>
+          <a href="#" class="social-link" aria-label="Facebook"><i class="fa-brands fa-facebook-f"></i></a>
+          <a href="#" class="social-link" aria-label="LinkedIn"><i class="fa-brands fa-linkedin-in"></i></a>
+        </div>
+      </div>
+
+      <div class="footer-links-group">
+        <h5 class="footer-group-title">Explore</h5>
+        <ul>
+          <li><a href="#destinations">Destinations</a></li>
+          <li><a href="#plan">Plan Trip</a></li>
+          <li><a href="#about">About</a></li>
+          <li><a href="#contact">Contact</a></li>
+        </ul>
+      </div>
+
+      <div class="footer-links-group">
+        <h5 class="footer-group-title">Regions</h5>
+        <ul>
+          <li><a href="#destinations">North India</a></li>
+          <li><a href="#destinations">South India</a></li>
+          <li><a href="#destinations">East India</a></li>
+          <li><a href="#destinations">Islands</a></li>
+        </ul>
+      </div>
+
+      <div class="footer-links-group">
+        <h5 class="footer-group-title">Legal</h5>
+        <ul>
+          <li><a href="#">Privacy Policy</a></li>
+          <li><a href="#">Terms of Use</a></li>
+          <li><a href="#">Cookie Policy</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <p>© 2025 Trip Sync. All rights reserved. Made with <span class="heart">♥</span> in India.</p>
+    </div>
+  </footer>
+
+  <!-- ══════════ DESTINATION MODAL ══════════ -->
+  <div class="modal-backdrop" id="modalBackdrop" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+    <div class="modal-panel glass-card" id="modalPanel">
+
+      <!-- Futuristic loading spinner overlay (shown while fetching) -->
+      <div class="modal-loader" id="modalLoader" aria-label="Loading destination details">
+        <div class="loader-ring"></div>
+        <div class="loader-ring loader-ring--2"></div>
+        <div class="loader-ring loader-ring--3"></div>
+        <p class="loader-text">Syncing destination<span class="loader-dots"></span></p>
+      </div>
+
+      <button class="modal-close" id="modalClose" aria-label="Close modal">✕</button>
+      <div class="modal-hero-img" id="modalHeroImg"></div>
+
+      <div class="modal-body" id="modalBody">
+        <!-- Header row -->
+        <div class="modal-header-row">
+          <div>
+            <span class="modal-tag" id="modalTag"></span>
+            <h2 class="modal-title" id="modalTitle"></h2>
+            <p class="modal-tagline" id="modalTagline"></p>
+          </div>
+          <div class="modal-rating" id="modalRating"></div>
+        </div>
+
+        <p class="modal-description" id="modalDescription"></p>
+
+        <!-- ── TAB NAV ── -->
+        <div class="modal-tabs" role="tablist">
+          <button class="modal-tab active" data-tab="overview" role="tab" aria-selected="true">
+            <i class="fa fa-map-location-dot"></i> Map &amp; Overview
+          </button>
+          <button class="modal-tab" data-tab="best-time" role="tab" aria-selected="false">
+            <i class="fa fa-sun"></i> Best Time
+          </button>
+          <button class="modal-tab" data-tab="nearby" role="tab" aria-selected="false">
+            <i class="fa fa-location-pin"></i> Nearby Places
+          </button>
+          <button class="modal-tab" data-tab="activities" role="tab" aria-selected="false">
+            <i class="fa fa-bolt"></i> Activities
+          </button>
+        </div>
+
+        <!-- ── TAB PANELS ── -->
+
+        <!-- Overview: map + attractions -->
+        <div class="modal-tab-panel active" id="tab-overview">
+          <div class="modal-map-wrapper">
+            <h3 class="modal-section-title"><i class="fa fa-map-location-dot"></i> Location &amp; Attractions</h3>
+            <div id="destinationMap" class="destination-map"></div>
+          </div>
+        </div>
+
+        <!-- Best Time to Visit -->
+        <div class="modal-tab-panel" id="tab-best-time">
+          <div class="modal-best-time-panel">
+            <div class="modal-best-time" id="modalBestTime"></div>
+            <div class="best-time-seasons" id="bestTimeSeasons"></div>
+          </div>
+        </div>
+
+        <!-- Nearby Places -->
+        <div class="modal-tab-panel" id="tab-nearby">
+          <!-- Live data badge -->
+          <div class="nearby-status" id="nearbyStatus"></div>
+          <!-- Spinner while nearby loads -->
+          <div class="nearby-loader" id="nearbyLoader">
+            <div class="nearby-spinner"></div>
+            <span>Fetching live nearby places…</span>
+          </div>
+          <div class="modal-info-grid" id="nearbyGrid" style="display:none">
+            <div class="modal-info-panel glass-card">
+              <h3 class="modal-section-title">
+                <i class="fa fa-utensils" style="color:var(--clr-neon-gold)"></i> Restaurants
+              </h3>
+              <ul id="modalRestaurants" class="modal-info-list"></ul>
+            </div>
+            <div class="modal-info-panel glass-card">
+              <h3 class="modal-section-title">
+                <i class="fa fa-bed" style="color:var(--clr-neon-cyan)"></i> Hotels
+              </h3>
+              <ul id="modalHotels" class="modal-info-list"></ul>
+            </div>
+            <div class="modal-info-panel glass-card">
+              <h3 class="modal-section-title">
+                <i class="fa fa-house-chimney" style="color:var(--clr-neon-violet)"></i> Hostels
+              </h3>
+              <ul id="modalHostels" class="modal-info-list"></ul>
+            </div>
+          </div>
+        </div>
+
+        <!-- Fun Activities -->
+        <div class="modal-tab-panel" id="tab-activities">
+          <div class="modal-activities">
+            <h3 class="modal-section-title"><i class="fa fa-bolt"></i> Fun Activities</h3>
+            <div class="activity-pills" id="modalActivities"></div>
+          </div>
+        </div>
+
+      </div><!-- /modal-body -->
+    </div><!-- /modal-panel -->
+  </div>
+
+  <!-- ══════════ BACK TO TOP ══════════ -->
+  <button class="back-to-top glass-card" id="backToTop" aria-label="Back to top">
+    <i class="fa fa-chevron-up"></i>
+  </button>
+
+  <!-- ══════════ NEON TOAST ══════════ -->
+  <div class="neon-toast" id="neonToast" aria-live="polite">
+    <i class="fa fa-check-circle"></i> <span id="neonToastMsg">Saved</span>
+  </div>
+
+  <!-- ══════════ CHECKLIST LOADER ══════════ -->
+  <div class="checklist-loader-overlay" id="checklistLoaderOverlay">
+    <div class="loader-ring"></div>
+  </div>
+
+  <!-- Mouse Trail Canvas (layered above hero) -->
+  <canvas id="mouseTrailCanvas" style="position:fixed;top:0;left:0;width:100%;height:100%;pointer-events:none;z-index:1;"></canvas>
+
+  <!-- Scripts -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+  <script src="https://unpkg.com/aos@2.3.4/dist/aos.js"></script>
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+  <script src="script.js"></script>
+</body>
+</html>
