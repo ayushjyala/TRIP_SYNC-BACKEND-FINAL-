@@ -1,4 +1,4 @@
-# 🌌 Trip Sync – Hyper‑Aesthetic India Travel Guide
+# 🌌 Trip Sync – Hyper‑Aesthetic India Travel Guide:-
 
 **Trip Sync** is a futuristic, visually immersive travel guide for exploring incredible destinations across **India**.  
 With a real-time 3D cursor-interactive background, glassmorphism design, and a full‑stack architecture, it delivers everything a modern traveler needs – from nearby restaurants and hotels to a persistent trip checklist.
